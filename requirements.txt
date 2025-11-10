@@ -30,7 +30,7 @@ requests==2.31.0
 # --- Supportive Dependencies ---
 typing-extensions==4.11.0
 filelock==3.13.1
-packaging==24.0
+packaging==23.2          # ✅ fixed version for all conflicts
 cachetools==5.3.3
 regex==2024.5.10
 nltk==3.8.1
@@ -42,7 +42,7 @@ matplotlib==3.8.4
 
 # --- Streamlit Optimization ---
 blinker==1.7.0
-watchdog==4.0.1
+watchdog==3.0.0
 
 # --- Security / HTTP Core ---
 certifi==2024.2.2
@@ -50,3 +50,8 @@ urllib3==2.2.2
 charset-normalizer==3.3.2
 idna==3.7
 requests-toolbelt==1.0.0
+
+# --- Streamlit Cloud Fixes ---
+psutil==5.9.8
+protobuf==4.25.3
+
