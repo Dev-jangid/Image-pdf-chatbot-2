@@ -30,7 +30,7 @@ class Config:
     IMAGE_STORAGE_DIR = "extracted_images"
     
     # Thresholds
-    TEXT_SCORE_THRESHOLD = 0.15
+    TEXT_SCORE_THRESHOLD = 0.25
     IMAGE_BASE_THRESHOLD = 0.18
     IMAGE_VISUAL_THRESHOLD = 0.12
     MEMORY_SCORE_THRESHOLD = 0.3
@@ -44,5 +44,3 @@ class Config:
     EXAMPLE_TRIGGERS = ["example", "instance", "sample", "demonstration"]
     INFO_TRIGGERS = ["tell", "explain", "about", "details", "brief", "summarize", "what", "how", "why", "meaning", "define"]
     JUNK_TRIGGERS = ["clear", "wrong", "reset", "clean", "bad", "incorrect", "false", "good", "hello", "hi", "test", "nonsense", "asdf", "...", "?", "."]
-    
-
