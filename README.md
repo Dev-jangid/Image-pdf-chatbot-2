@@ -225,6 +225,16 @@ Hybrid queries focus on the relationship between text and graphics. When a user 
 * `src/prompts.py`: The "Brain" containing the Contextual Triangulation Architecture.
 * `app.py`: The central pipeline orchestrating intent, search, and the LLM.
 
+
+
+
+
+
+
+![Screenshot 2025-05-27 152331](https://github.com/user-attachments/assets/d3b2af74-e224-4b8d-9a39-2fd938ad9c17)
+![Screenshot 2025-05-27 152221](https://github.com/user-attachments/assets/20b563f1-1089-455c-bbb1-57d36a75644e)
+![Screenshot 2025-05-27 152151](https://github.com/user-attachments/assets/6aeaaf2a-1204-4081-b539-853fc5b0f782)
+
 ## Installation & Setup
 
 ### **1. Prerequisites**
@@ -283,3 +293,6 @@ streamlit run app.py
 ## License
 
 MIT License - feel free to use and modify for your own projects.
+
+
+
