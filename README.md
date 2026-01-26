@@ -4,6 +4,27 @@
 
 ---
 
+## Project Structure
+
+```text
+Image-pdf-chatbot/
+├── app.py              # Main Streamlit application entry point
+├── src/                # Core logic modules
+│   ├── chat.py         # Response generation logic
+│   ├── config.py       # Global settings and thresholds
+│   ├── memory.py       # Local conversation indexing (FAISS)
+│   ├── ocr.py          # EasyOCR image-to-text management
+│   ├── processor.py    # PDF/Image ingestion and extraction
+│   ├── prompts.py      # System personas and behavior protocols
+│   ├── search.py       # Hybrid retrieval (Dense + Sparse)
+│   └── styles.py       # UI/UX CSS styling
+├── requirements.txt    # Project dependencies
+├── .env                # API Keys (not tracked by git)
+└── README.md           # Documentation
+```
+
+---
+
 ## Key Features
 
 ### 1. **Quad-Stage Intent Triangulation**
@@ -159,16 +180,20 @@ Unlike traditional OCR which just "reads" text inside images, this system **unde
 * **Contextual Boosting**: To ensure relevance, images that appear on the same page as highly-relevant text chunks receive a **15% score boost**, effectively "re-ranking" them to favor the current topic.
 
 ### **3. Image Filtration & Ranking Protocol**
+
 Nexus employs a multi-tier filtration system to ensure only the most relevant visuals reach the user:
-*   **Vector Thresholding**: CLIP similarity scores are filtered against a strict threshold (`IMAGE_SCORE_THRESHOLD`). Any visual scoring below this is automatically discarded.
-*   **Intent Gating**: Even if high-confidence images are found, the system will **suppress** their display unless the "Intent Triangulation" engine detects explicit visual keywords (image, diagram, show, etc.).
-*   **Top-K Selection**: The system dynamically selects only the Top-3 most relevant visuals per query to prevent UI clutter and ensure high conversational focus.
+
+* **Vector Thresholding**: CLIP similarity scores are filtered against a strict threshold (`IMAGE_SCORE_THRESHOLD`). Any visual scoring below this is automatically discarded.
+* **Intent Gating**: Even if high-confidence images are found, the system will **suppress** their display unless the "Intent Triangulation" engine detects explicit visual keywords (image, diagram, show, etc.).
+* **Top-K Selection**: The system dynamically selects only the Top-3 most relevant visuals per query to prevent UI clutter and ensure high conversational focus.
 
 ### **4. Automatic Image Cleansing (Logo & Icon Filtration)**
+
 To ensure the AI strictly focuses on meaningful content (diagrams, charts, blueprints) and ignores decorative elements, the system implements a hardware-level dimension filter during extraction:
-*   **Resolution Gating**: Every image extracted from the PDF is checked against a minimum resolution threshold (250x250 pixels). 
-*   **Logo Suppression**: Smaller elements such as corporate logos, social media icons, page numbers, and UI buttons are automatically discarded before indexing.
-*   **Noise Reduction**: This pre-processing layer ensures that the Vision Search engine only operates on high-value visual data, significantly reducing "false positive" results where a logo might accidentally match a textual concept.
+
+* **Resolution Gating**: Every image extracted from the PDF is checked against a minimum resolution threshold (250x250 pixels).
+* **Logo Suppression**: Smaller elements such as corporate logos, social media icons, page numbers, and UI buttons are automatically discarded before indexing.
+* **Noise Reduction**: This pre-processing layer ensures that the Vision Search engine only operates on high-value visual data, significantly reducing "false positive" results where a logo might accidentally match a textual concept.
 
 ### **2. Hybrid Query Logic (The Synthesizer)**
 
@@ -200,14 +225,15 @@ Hybrid queries focus on the relationship between text and graphics. When a user 
 * `src/prompts.py`: The "Brain" containing the Contextual Triangulation Architecture.
 * `app.py`: The central pipeline orchestrating intent, search, and the LLM.
 
-
 ## Installation & Setup
 
 ### **1. Prerequisites**
+
 - **Python**: 3.13.11 (Recommended)
 - **Tesseract OCR**: Required for fallback image text extraction (Install via `apt-get` or download for Windows).
 
 ### **2. Clone & Install**
+
 ```bash
 git clone https://github.com/Dev-jangid/Image-pdf-chatbot-2.git
 cd Image-pdf-chatbot-2
@@ -222,12 +248,15 @@ pip install -r requirements.txt
 ```
 
 ### **3. Environment Variables**
+
 Create a `.env` file in the root directory and add your Groq API key:
+
 ```env
 GROQ_API_KEY=your_api_key_here
 ```
 
 ### **4. Run the Application**
+
 ```bash
 streamlit run app.py
 ```
@@ -252,4 +281,5 @@ streamlit run app.py
 ---
 
 ## License
+
 MIT License - feel free to use and modify for your own projects.
