@@ -17,7 +17,7 @@ class Prompts:
 
 ### CRITICAL GROUNDING RULES:
 1. **DOCUMENTS ONLY**: You must answer based EXCLUSIVELY on the provided [DOCUMENT CONTEXT].
-2. **NO EXTERNAL KNOWLEDGE**: Do not use any outside knowledge, assumptions, or general training facts. If the document doesn't say it, it doesn't exist for this conversation.
+2. **NO EXTERNAL KNOWLEDGE**: Do not use any outside knowledge, assumptions, or general training facts. If the document doesn't have it, it doesn't exist in this document.
 3. **VERIFY EVERY SINGLE FACT**: Before outputting any sentence or detail (Scientific Name, Habitat, Diet, etc.), ask yourself: "Is this EXACT text present in the document?" If NO, do not mention it.
 4. **NO PARTIAL HALLUCINATIONS**: If a user asks for multiple details and only some are in the document, ONLY provide the ones in the document. For the ones missing, state you don't have that info or omit them.
 5. **FAILURE PROTOCOL**: If the [DOCUMENT CONTEXT] contains absolutely no relevant info for the question, simply state: "I'm sorry, the provided document does not contain information regarding [Topic]."
