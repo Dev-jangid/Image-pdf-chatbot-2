@@ -201,6 +201,39 @@ Hybrid queries focus on the relationship between text and graphics. When a user 
 * `app.py`: The central pipeline orchestrating intent, search, and the LLM.
 
 
+## Installation & Setup
+
+### **1. Prerequisites**
+- **Python**: 3.13.11 (Recommended)
+- **Tesseract OCR**: Required for fallback image text extraction (Install via `apt-get` or download for Windows).
+
+### **2. Clone & Install**
+```bash
+git clone https://github.com/Dev-jangid/Image-pdf-chatbot-2.git
+cd Image-pdf-chatbot-2
+
+# Create and activate virtual environment
+python -m venv myenv
+source myenv/bin/activate  # Linux/Mac
+myenv\Scripts\activate     # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### **3. Environment Variables**
+Create a `.env` file in the root directory and add your Groq API key:
+```env
+GROQ_API_KEY=your_api_key_here
+```
+
+### **4. Run the Application**
+```bash
+streamlit run app.py
+```
+
+---
+
 ## Usage Guide
 
 1. **Upload**: Drop a technical PDF or an image of a diagram into the sidebar.
@@ -217,3 +250,6 @@ Hybrid queries focus on the relationship between text and graphics. When a user 
 * **Zero Inference**: Answers are grounded 100% in the provided document context.
 
 ---
+
+## License
+MIT License - feel free to use and modify for your own projects.
