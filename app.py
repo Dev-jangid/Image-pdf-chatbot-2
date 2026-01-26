@@ -241,14 +241,14 @@ def main():
                     # Update Memory Vector DB
                     st.session_state.memory_manager.add_interaction(prompt, response)
                     
-                    # --- IMAGE DISPLAY LOGIC ---
-                    # Show images if any were found, even if explicit visual intent wasn't detected
+                    # --- STRICT IMAGE DISPLAY LOGIC ---
+                    # ONLY display images if the system detected EXPLICIT visual intent (is_visual from search)
                     display_images = []
-                    if hits["image_hits"]:
+                    if hits["image_hits"] and is_visual:
                         display_images = hits["image_hits"]
                         with image_placeholder.container():
                             st.markdown("---")
-                            st.markdown("#### Relevant Visuals")
+                            st.markdown("#### Visual Context")
                             n_cols = min(3, len(display_images))
                             img_cols = st.columns(n_cols)
                             for idx, img in enumerate(display_images):
