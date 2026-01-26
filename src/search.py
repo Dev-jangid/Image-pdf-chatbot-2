@@ -15,9 +15,10 @@ class MultimodalSearch:
         is_visual = any(word in query_lower for word in Config.VISUAL_TRIGGERS)
         
         # Boost visual intent if query is very short and contains a visual word
-        if is_visual and len(prompt.split()) <= 3:
-            # High confidence visual request
-            pass 
+        strict_visual_force = False
+        if is_visual and len(prompt.split()) <= 6:
+            # High confidence visual request -> Force lower threshold
+            strict_visual_force = True 
         
         # 1. Text Search (Hybrid: FAISS + BM25)
         if self.data.get("text_index") is not None:
@@ -76,8 +77,12 @@ class MultimodalSearch:
             faiss.normalize_L2(t_features)
             
             # Adjust threshold based on intent
-            base_threshold = Config.IMAGE_VISUAL_THRESHOLD if is_visual else Config.IMAGE_BASE_THRESHOLD
-            top_k = Config.IMAGE_TOP_K if not is_visual else max(Config.IMAGE_TOP_K, 3)
+            if strict_visual_force:
+                base_threshold = 0.05 # Very lenient for explicit requests
+                top_k = 5
+            else:
+                base_threshold = Config.IMAGE_VISUAL_THRESHOLD if is_visual else Config.IMAGE_BASE_THRESHOLD
+                top_k = Config.IMAGE_TOP_K if not is_visual else max(Config.IMAGE_TOP_K, 3)
             top_k_search = min(top_k * 3, self.data["image_index"].ntotal) # Fetch more candidates
             
             scores, indices = self.data["image_index"].search(t_features, top_k_search)
@@ -92,6 +97,20 @@ class MultimodalSearch:
                 final_score = score
                 if img_data["page"] in relevant_pages:
                     final_score *= 1.15
+                
+                # --- OCR VERIFICATION BOOST (Dual-Factor) ---
+                # If specific words from the prompt are found INSIDE the image text
+                keywords = [k for k in prompt.lower().split() if len(k) > 4] # Ignore short words
+                ocr_content = img_data.get("ocr_text", "").lower()
+                
+                if ocr_content and keywords:
+                    matches = sum(1 for k in keywords if k in ocr_content)
+                    if matches > 0:
+                        # Massive 40% boost for direct visual text match
+                        final_score *= 1.40
+                        # If highly specific match, force it immediately
+                        if matches >= 2:
+                            final_score += 0.1 # Add absolute bonus to push it over threshold
                 
                 if final_score > base_threshold:
                     reranked_images.append((img_data, final_score))

@@ -206,6 +206,9 @@ def main():
         # Construct Context
         if hits["text_hits"]:
             final_context = "\n".join([f"[Page {h['page']}]: {h['content']}" for h in hits["text_hits"]])
+        elif hits["image_hits"]:
+            # Fallback for purely visual queries where text might be missing
+            final_context = "[System Note: No text content found, but relevant images were detected. Describe the images based on the user's request.]"
         else:
             final_context = "CRITICAL: NO RELEVANT CONTENT FOUND IN THE DOCUMENT FOR THIS QUERY."
         
@@ -227,13 +230,16 @@ def main():
                             })
 
                     # 2. Call the centralized response generator
+                    top_score = hits["image_hits"][0]["score"] if hits["image_hits"] else 0.0
+                    
                     response = generate_chat_response(
                         client=resources["groq_client"],
                         user_input=prompt,
                         context=final_context,
                         history=chat_history,
                         img_count=len(hits["image_hits"]),
-                        is_visual=is_visual
+                        is_visual=is_visual,
+                        top_score=top_score
                     )
                     
                     response_placeholder.markdown(response)
@@ -245,7 +251,7 @@ def main():
                     # ONLY display images if the system detected EXPLICIT visual intent (is_visual from search)
                     display_images = []
                     if hits["image_hits"] and is_visual:
-                        display_images = hits["image_hits"]
+                        display_images = hits["image_hits"][:3]
                         with image_placeholder.container():
                             st.markdown("---")
                             st.markdown("#### Visual Context")

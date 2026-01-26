@@ -21,8 +21,8 @@ class Config:
     MAX_TOKENS = 1000
     
     # Image Filtering
-    MIN_IMAGE_WIDTH = 250
-    MIN_IMAGE_HEIGHT = 250
+    MIN_IMAGE_WIDTH = 100
+    MIN_IMAGE_HEIGHT = 100
     IMAGE_STORAGE_DIR = os.path.abspath("extracted_images")
     VECTOR_DB_DIR = os.path.abspath("vector_db")
     MEMORY_DB_DIR = os.path.abspath("memory_db")
@@ -30,7 +30,7 @@ class Config:
     # Thresholds
     TEXT_SCORE_THRESHOLD = 0.25
     IMAGE_BASE_THRESHOLD = 0.18
-    IMAGE_VISUAL_THRESHOLD = 0.12
+    IMAGE_VISUAL_THRESHOLD = 0.25
     MEMORY_SCORE_THRESHOLD = 0.3
     HYBRID_ALPHA = 0.5 
     MEMORY_WINDOW = 3 

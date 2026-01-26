@@ -1,7 +1,7 @@
 from .config import Config
 from .prompts import Prompts
 
-def generate_chat_response(client, user_input, context, history=[], img_count=0, is_visual=False):
+def generate_chat_response(client, user_input, context, history=[], img_count=0, is_visual=False, top_score=0.0):
     """
     Generates a response using templates from prompts.py and logic for mode selection.
     """
@@ -14,8 +14,14 @@ def generate_chat_response(client, user_input, context, history=[], img_count=0,
     has_info_intent = any(t in query_lower for t in Config.INFO_TRIGGERS) or (len(user_input.split()) > 8)
 
     # 2. Visual Context Flag
-    if is_visual and img_count > 0:
-        visual_info = f"\n[SYSTEM: {img_count} relevant visual(s) detected and currently displayed. Reference them directly.]"
+    # 2. Visual Context Flag
+    if is_visual:
+        # STRICT CONFIDENCE GATE: Only acknowledge images if score > 0.25
+        if img_count > 0 and top_score > 0.25:
+            visual_info = f"\n[SYSTEM: {img_count} relevant visual(s) detected with HIGH CONFIDENCE (Score: {top_score:.2f}). You MUST reference them.]"
+        else:
+            # Even if we found images, if score is low, we tell LLM they don't exist to prevent hallucinations
+            visual_info = "\n[SYSTEM: No high-confidence visuals found. Explicitly state that you do NOT have the image for this specific request.]"
     else:
         visual_info = ""
 

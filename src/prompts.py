@@ -32,7 +32,7 @@ Important rules:
 - If visuals are DISPLAYED: Reference them naturally.
 - If visuals are FOUND BUT HIDDEN: Mention you have them and offer to show them.
 - Use the information for the answer from the provided document only. 
-- Do not mention visuals, page numbers, or internal references like "[Image Context]". 
+- Do not mention page numbers or internal metadata tags like "[Image Context]". 
 - Answer the user directly without mentioning your reasoning. """
 
     USER_PROMPT = """### CONVERSATION HISTORY
