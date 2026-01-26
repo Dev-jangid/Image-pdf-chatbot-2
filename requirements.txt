@@ -12,5 +12,10 @@ faiss-cpu
 rank-bm25>=0.2.2
 pillow>=10.0.0
 numpy<2.0.0
-easyocr>=1.7.0
 opencv-python-headless
+
+# --- System Dependencies (Installed via packages.txt) ---
+# libgl1-mesa-glx
+# libglib2.0-0
+# tesseract-ocr
+# poppler-utils
