@@ -1,0 +1,14 @@
+vault_storage/
+.env
+__pycache__/
+*.pdf
+*.png
+*.jpg
+*.jpeg
+.streamlit/
+venv/
+myenv/
+vector_db/
+extracted_images/
+memory_db/
+.DS_Store
