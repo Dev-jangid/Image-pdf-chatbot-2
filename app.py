@@ -12,7 +12,6 @@ from src.processor import MultimodalProcessor
 from src.search import MultimodalSearch
 from src.prompts import Prompts
 from src.memory import MemoryManager
-from src.ocr import OCRManager
 from src.chat import generate_chat_response
 
 # --- PAGE CONFIGURATION ---
@@ -37,8 +36,7 @@ def load_resources():
             chunk_overlap=Config.CHUNK_OVERLAP,
             length_function=len
         ),
-        "groq_client": Groq(api_key=Config.GROQ_API_KEY) if Config.GROQ_API_KEY else None,
-        "ocr_manager": OCRManager()
+        "groq_client": Groq(api_key=Config.GROQ_API_KEY) if Config.GROQ_API_KEY else None
     }
 
 def reset_storage():

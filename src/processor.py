@@ -73,21 +73,13 @@ class MultimodalProcessor:
                     image_filename = f"{file_hash}_p{page_num+1}_img{img_idx}.jpg"
                     image_save_path = os.path.join(Config.IMAGE_STORAGE_DIR, image_filename)
                     pil_img.save(image_save_path)
-
-                    try:
-                        img_text = self.res["ocr_manager"].extract_text(image_save_path)
-                        if img_text:
-                            texts.append({"content": f"[Image Context]: {img_text}", "page": page_num + 1})
-                    except Exception as e:
-                        img_text = ""
-                        print(f"⚠️ OCR Error: {e}")
                         
                     images.append({
                         "image": pil_img,
                         "path": image_save_path,
                         "page": page_num + 1,
                         "id": f"p{page_num+1}_i{img_idx}",
-                        "ocr_text": img_text if img_text else ""
+                        "ocr_text": ""
                     })
             
             status.update(label=" Building FAISS & BM25 Indices...", state="running")
@@ -113,15 +105,7 @@ class MultimodalProcessor:
         pil_img.save(image_save_path)
         
         texts = []
-        img_text = ""
-        try:
-            img_text = self.res["ocr_manager"].extract_text(image_save_path)
-            if img_text:
-                texts.append({"content": img_text, "page": 1})
-        except Exception as e:
-            print(f" Standalone OCR Error: {e}")
-
-        images = [{"image": pil_img, "page": 1, "id": "standalone", "ocr_text": img_text}]
+        images = [{"image": pil_img, "page": 1, "id": "standalone", "ocr_text": ""}]
         image_index = self._build_image_index(images)
         text_index, bm25 = self._build_text_index(texts)
 
