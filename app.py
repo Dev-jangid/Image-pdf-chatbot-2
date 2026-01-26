@@ -126,6 +126,23 @@ def main():
             st.session_state.uploader_key = new_key
             st.rerun()
 
+        st.markdown("---")
+        with st.expander("🛠️ System Health", expanded=False):
+            st.write(f"**Device:** `{Config.DEVICE.upper()}`")
+            st.write(f"**RAM Mode:** `{'Optimized' if not Config.USE_GPU else 'Performance'}`")
+            
+            if st.session_state.vault:
+                n_texts = len(st.session_state.vault.get("texts", []))
+                n_imgs = len(st.session_state.vault.get("images", []))
+                st.write(f"**Indexed Text Chunks:** {n_texts}")
+                st.write(f"**Indexed Images:** {n_imgs}")
+                
+                # Verify physical files
+                files = os.listdir(Config.IMAGE_STORAGE_DIR) if os.path.exists(Config.IMAGE_STORAGE_DIR) else []
+                st.write(f"**Physical Images:** {len(files)}")
+            else:
+                st.info("No document loaded.")
+
     # Main Interface
     # Hero Section Removed as per request
     
