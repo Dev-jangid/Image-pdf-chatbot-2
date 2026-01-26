@@ -7,6 +7,7 @@ import numpy as np
 import streamlit as st
 import faiss
 from PIL import Image
+import torch
 from rank_bm25 import BM25Okapi
 from .config import Config
 
@@ -150,9 +151,17 @@ class MultimodalProcessor:
             
         embeddings = []
         for img_data in images:
-            inputs = self.res["clip_processor"](images=img_data["image"], return_tensors="pt").to(Config.DEVICE)
-            features = self.res["clip_model"].get_image_features(**inputs)
-            embeddings.append(features.cpu().detach().numpy())
+            with torch.no_grad():
+                inputs = self.res["clip_processor"](images=img_data["image"], return_tensors="pt").to(Config.DEVICE)
+                features = self.res["clip_model"].get_image_features(**inputs)
+                
+                # Robust tensor-to-numpy conversion
+                if hasattr(features, "cpu"):
+                    features = features.cpu().detach().numpy()
+                else:
+                    features = np.array(features)
+                    
+                embeddings.append(features)
         
         embeddings = np.concatenate(embeddings, axis=0).astype('float32')
         faiss.normalize_L2(embeddings)
