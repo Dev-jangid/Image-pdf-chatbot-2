@@ -70,8 +70,9 @@ class MultimodalSearch:
 
         # 2. Image Search (FAISS Semantic + Page Coherence)
         if self.data.get("image_index") is not None:
-            inputs = self.res["clip_processor"](text=[prompt], return_tensors="pt", padding=True)
-            t_features = self.res["clip_model"].get_text_features(**inputs).detach().numpy().astype('float32')
+            # Fix: Ensure inputs are moved to the same device as the model (e.g., CUDA)
+            inputs = self.res["clip_processor"](text=[prompt], return_tensors="pt", padding=True).to(Config.DEVICE)
+            t_features = self.res["clip_model"].get_text_features(**inputs).detach().cpu().numpy().astype('float32')
             faiss.normalize_L2(t_features)
             
             # Adjust threshold based on intent
