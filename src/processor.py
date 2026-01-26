@@ -150,34 +150,48 @@ class MultimodalProcessor:
             return None
             
         embeddings = []
+        expected_dim = None
+
         for img_data in images:
-            with torch.no_grad():
-                inputs = self.res["clip_processor"](images=img_data["image"], return_tensors="pt").to(Config.DEVICE)
-                features = self.res["clip_model"].get_image_features(**inputs)
-                
-                # Robust tensor-to-numpy conversion
-                if hasattr(features, "cpu"):
-                    features = features.cpu().detach().numpy()
-                else:
-                    features = np.array(features)
+            try:
+                with torch.no_grad():
+                    inputs = self.res["clip_processor"](images=img_data["image"], return_tensors="pt").to(Config.DEVICE)
+                    features = self.res["clip_model"].get_image_features(**inputs)
                     
-                # Ensure it's a 2D array (1, Dim) for concatenation
-                if features.ndim == 1:
-                    features = features.reshape(1, -1)
-                elif features.ndim == 2 and features.shape[0] != 1:
-                    # If multiple images were processed in one pass (rare here)
-                    pass 
-                
-                embeddings.append(features)
+                    # 1. Convert to numpy
+                    if hasattr(features, "cpu"):
+                        feat_arr = features.cpu().detach().numpy()
+                    else:
+                        feat_arr = np.array(features)
+                    
+                    # 2. Flatten to (1, -1) effectively
+                    feat_arr = feat_arr.reshape(1, -1)
+                    
+                    # 3. Consistency check for dimension
+                    if expected_dim is None:
+                        expected_dim = feat_arr.shape[1]
+                    
+                    if feat_arr.shape[1] == expected_dim:
+                        embeddings.append(feat_arr)
+                    else:
+                        print(f"⚠️ Skipping image {img_data.get('id')} due to dim mismatch: {feat_arr.shape[1]} != {expected_dim}")
+            except Exception as e:
+                print(f"⚠️ Error processing image {img_data.get('id')}: {e}")
+                continue
         
         if not embeddings:
             return None
 
-        embeddings = np.concatenate(embeddings, axis=0).astype('float32')
-        faiss.normalize_L2(embeddings)
-        index = faiss.IndexFlatIP(embeddings.shape[1])
-        index.add(embeddings)
-        return index
+        # Bulletproof concatenation
+        try:
+            embeddings = np.concatenate(embeddings, axis=0).astype('float32')
+            faiss.normalize_L2(embeddings)
+            index = faiss.IndexFlatIP(embeddings.shape[1])
+            index.add(embeddings)
+            return index
+        except Exception as e:
+            print(f"🚨 Critical Failure in Image Indexing: {e}")
+            return None
 
     def _pad_image(self, pil_img):
         """Pads an image to square to prevent CLIP distortion"""
