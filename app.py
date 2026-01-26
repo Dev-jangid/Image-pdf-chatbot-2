@@ -187,7 +187,10 @@ def main():
         memory_context = st.session_state.memory_manager.search_memory(prompt)
         
         # Construct Context
-        final_context = "\n".join([f"[Page {h['page']}]: {h['content']}" for h in hits["text_hits"]])
+        if hits["text_hits"]:
+            final_context = "\n".join([f"[Page {h['page']}]: {h['content']}" for h in hits["text_hits"]])
+        else:
+            final_context = "CRITICAL: NO RELEVANT CONTENT FOUND IN THE DOCUMENT FOR THIS QUERY."
         
         # LLM Call
         with st.chat_message("assistant"):
