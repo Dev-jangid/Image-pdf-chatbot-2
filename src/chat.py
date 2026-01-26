@@ -23,7 +23,7 @@ def generate_chat_response(client, user_input, context, history=[], img_count=0,
     if has_visual_intent:
         if has_info_intent or (has_example_intent and not is_short):
             length_instruction = Prompts.CONDITION_HYBRID
-        elif is_short:
+        elif is_short and is_visual:
             length_instruction = Prompts.CONDITION_VISUAL_ONLY
         else:
             length_instruction = Prompts.CONDITION_HYBRID
