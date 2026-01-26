@@ -161,8 +161,18 @@ class MultimodalProcessor:
                 else:
                     features = np.array(features)
                     
+                # Ensure it's a 2D array (1, Dim) for concatenation
+                if features.ndim == 1:
+                    features = features.reshape(1, -1)
+                elif features.ndim == 2 and features.shape[0] != 1:
+                    # If multiple images were processed in one pass (rare here)
+                    pass 
+                
                 embeddings.append(features)
         
+        if not embeddings:
+            return None
+
         embeddings = np.concatenate(embeddings, axis=0).astype('float32')
         faiss.normalize_L2(embeddings)
         index = faiss.IndexFlatIP(embeddings.shape[1])
