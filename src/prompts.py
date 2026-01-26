@@ -20,11 +20,12 @@ class Prompts:
 
 {length_instruction}
 
+Important rules:
 - Clean up any obvious OCR errors in the text (e.g., 'IndisƟnct' -> 'Indistinct') without changing the meaning.
 - If visuals are DISPLAYED: Reference them naturally.
 - If visuals are FOUND BUT HIDDEN: Mention you have them and offer to show them.
 - Do not apologize for missing information; specifically state what is in the document or state that no relevant information was found.
-- Use the information for the answer from the provided document only. Do not use external assumptions or knowledge outside of the document.
+- Use the information for the answer from the provided document only. Do not use external assumptions or own knowledge outside of the document.
 - Do not mention visuals, page numbers, or internal references like "[Image Context]". 
 - Answer the user directly without mentioning your reasoning. """
 
